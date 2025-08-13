@@ -18,7 +18,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   // DEFINE which paths should show the nav bar
-  const visiblePaths = ["/Home", "/Docs", "/Contacts", "/Booking"];
+  const visiblePaths = ["/home", "/documents", "/Contacts", "/Booking"];
 
   // CHECK if the current path starts with one of the visible paths
   const isVisible = visiblePaths.some((path) => pathname.startsWith(path));
