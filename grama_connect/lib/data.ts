@@ -12,24 +12,24 @@ export const authorities: Authority[] = [
     id: "cristiano",
     name: "Cristiano",
     role: "Grama Niladhari",
-    avatarUrl: "/avatars/cristiano.jpg",
+    avatarUrl: "/chatAvatars/cristiano.jpg",
   },
   {
     id: "messi",
     name: "Messi",
     role: "Pradeshiya Representative",
-    avatarUrl: "/avatars/messi.jpg",
+    avatarUrl: "/chatAvatars/messi.jpg",
   },
   {
     id: "dembele",
     name: "Dembele",
     role: "Divisional secretariat office",
-    avatarUrl: "/avatars/dembele.jpg",
+    avatarUrl: "/chatAvatars/dembele.jpg",
   },
   {
     id: "negreira",
     name: "Negreira",
     role: "Bribery Commission Rep",
-    avatarUrl: "/avatars/negreira.jpg",
+    avatarUrl: "/chatAvatars/negreira.jpg",
   },
 ];
