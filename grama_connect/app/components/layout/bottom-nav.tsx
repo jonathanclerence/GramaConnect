@@ -1,5 +1,5 @@
 // components/layout/bottom-nav.tsx
-"use client"; // This is a client component because it uses a hook
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -15,6 +15,17 @@ const navItems = [
 
 export function BottomNav() {
   const pathname = usePathname();
+
+  // DEFINE which paths should show the nav bar
+  const visiblePaths = ["/home", "/docs", "/contacts", "/booking"];
+
+  // CHECK if the current path starts with one of the visible paths
+  const isVisible = visiblePaths.some((path) => pathname.startsWith(path));
+
+  // If the path is not in our list, render nothing!
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <nav className="fixed bottom-4 left-1/2 z-50 h-16 w-[90%] max-w-md -translate-x-1/2 rounded-full border border-white/50 bg-white/30 p-2 shadow-lg backdrop-blur-xl">
