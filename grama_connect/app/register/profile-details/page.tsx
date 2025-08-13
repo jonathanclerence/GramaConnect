@@ -1,12 +1,21 @@
+"use client";
+
 import React from "react";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, Pencil, User } from "lucide-react";
 
 function ProfileDetails() {
+  const router = useRouter();
+
   return (
     <div className="min-h-screen bg-pink-50 flex justify-center items-center">
       <div className="bg-white rounded-3xl p-6 shadow-lg w-full max-w-md relative">
+        
         {/* Back Button */}
-        <button className="absolute top-4 left-4 bg-white rounded-full p-2 shadow">
+        <button
+          onClick={() => router.push("/register/otp")}
+          className="absolute top-4 left-4 bg-white rounded-full p-2 shadow hover:bg-gray-100"
+        >
           <ArrowLeft size={20} />
         </button>
 
@@ -61,7 +70,10 @@ function ProfileDetails() {
         </form>
 
         {/* Next Button */}
-        <button className="mt-6 w-full bg-gradient-to-b from-white to-gray-100 text-gray-800 font-medium py-3 rounded-full shadow hover:shadow-md transition">
+        <button
+          onClick={() => router.push("/next-step")}
+          className="mt-6 w-full bg-gradient-to-b from-white to-gray-100 text-gray-800 font-medium py-3 rounded-full shadow hover:shadow-md transition"
+        >
           Next
         </button>
       </div>
