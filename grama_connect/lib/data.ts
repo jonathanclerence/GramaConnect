@@ -33,3 +33,16 @@ export const authorities: Authority[] = [
     avatarUrl: "/chatAvatars/negreira.jpg",
   },
 ];
+
+export type Message = {
+  id: number;
+  text: string;
+  sender: 'me' | 'them';
+};
+
+export const mockMessages: Message[] = [
+    { id: 1, sender: 'them', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ultricies sed hendrerit ac mollis sollicitudin viverra proin.' },
+    { id: 2, sender: 'me', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ultricies sed hendrerit ac mollis sollicitudin viverra proin. Phasellus tristique nulla eu leo aliquet, maecenas sapien. Fermentum curabitur amet.' },
+    { id: 3, sender: 'them', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ultricies sed hendrerit ac mollis sollicitudin viverra proin.' },
+    { id: 4, sender: 'me', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+];
