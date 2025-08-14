@@ -4,22 +4,43 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebaseConfig";
 
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    router.push("/home"); // Redirect to home after login
-    console.log("Logging in with:", { username, password });
-    // Add your login logic here
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        username,
+        password
+      );
+      const idToken = await userCredential.user.getIdToken();
+
+      // Call API to set cookie
+      await fetch("/api/auth/set-cookie", {
+        method: "POST",
+        body: JSON.stringify({ idToken }),
+        headers: { "Content-Type": "application/json" },
+      });
+      router.push("/home");
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-pink-50 flex justify-center items-center">
       <div className="bg-gray-50 rounded-3xl p-6 shadow-lg w-full max-w-md relative">
-        {/* Back Button inside card */}
+        {/* Back Button */}
         <button className="absolute top-4 left-4 bg-white rounded-full p-2 shadow">
           <Link href="/">
             <ArrowLeft className="h-5 w-5" />
@@ -27,7 +48,7 @@ export default function LoginPage() {
         </button>
 
         {/* Username Field */}
-        <label className="block mt-10 mb-1 font-medium">Username</label>
+        <label className="block mt-10 mb-1 font-medium">Email</label>
         <input
           type="email"
           placeholder="rimaz@gmail.com"
@@ -46,12 +67,13 @@ export default function LoginPage() {
           className="w-full h-12 px-4 border border-gray-300 rounded-md mb-6 focus:outline-none focus:ring-2 focus:ring-pink-400"
         />
 
-        {/* Login Button inside card */}
+        {/* Login Button */}
         <button
           onClick={handleLogin}
+          disabled={loading}
           className="bg-white shadow-md rounded-full w-full py-3 font-medium hover:shadow-lg transition"
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
       </div>
     </div>
