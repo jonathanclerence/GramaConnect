@@ -38,13 +38,13 @@ export default function LandingPage() {
           size="lg"
           className="w-full rounded-full backdrop-blur-md bg-white/30 border border-white/40 text-black shadow-sm"
         >
-          Log In
+          <Link href="/register/login">Log In</Link>
         </Button>
         <Button
           size="lg"
           className="w-full rounded-full backdrop-blur-md bg-white/30 border border-white/40 text-black shadow-sm"
         >
-          Register
+          <Link href="/register/register-details">Register</Link>
         </Button>
 
         {/* Separator */}

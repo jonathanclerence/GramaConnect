@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeft, Share2 } from "lucide-react";
+import Link from "next/link";
 
 export default function ProfilePage() {
   return (
@@ -8,7 +9,9 @@ export default function ProfilePage() {
       {/* Header */}
       <div className="flex items-center justify-between w-full max-w-md my-4">
         <GlassButton>
-          <ArrowLeft className="h-5 w-5" />
+          <Link href="/home">
+            <ArrowLeft className="h-5 w-5" />
+          </Link>
         </GlassButton>
         <h1 className="font-medium text-lg">Home</h1>
         <GlassButton>
@@ -40,7 +43,7 @@ export default function ProfilePage() {
           </div>
 
           <GlassButton className="w-full rounded-full text-black">
-            Edit
+            <Link href="/profile/edit">Edit Profile</Link>
           </GlassButton>
         </CardContent>
       </Card>

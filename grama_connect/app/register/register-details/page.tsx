@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation"; // ✅ Import useRouter
 import { ArrowLeft, Shield, User } from "lucide-react";
+import Link from "next/link";
 
 export default function RegisterDetailsPage() {
   const router = useRouter(); // ✅ Create router instance
@@ -9,13 +10,14 @@ export default function RegisterDetailsPage() {
   return (
     <div className="min-h-screen bg-pink-50 flex justify-center items-center">
       <div className="bg-white rounded-3xl p-6 shadow-lg w-full max-w-md relative">
-        
         {/* Back Button */}
         <button
           onClick={() => router.push("/register/login")} // ✅ Navigate to nested OTP page
           className="absolute top-4 left-4 bg-white rounded-full p-2 shadow"
         >
-          <ArrowLeft size={20} />
+          <Link href="/">
+            <ArrowLeft size={20} />
+          </Link>
         </button>
 
         {/* Title */}
@@ -50,9 +52,9 @@ export default function RegisterDetailsPage() {
               htmlFor="agree"
               className="text-gray-700 text-sm leading-snug"
             >
-              By checking this box, I confirm that I have read and agree to Grama
-              Connect’s Personal Data Processing Regulations and the Terms and
-              Conditions for account services.
+              By checking this box, I confirm that I have read and agree to
+              Grama Connect’s Personal Data Processing Regulations and the Terms
+              and Conditions for account services.
             </label>
           </div>
         </div>

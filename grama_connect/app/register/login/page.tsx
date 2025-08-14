@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,6 +11,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
+    router.push("/home"); // Redirect to home after login
     console.log("Logging in with:", { username, password });
     // Add your login logic here
   };
@@ -17,13 +19,11 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-pink-50 flex justify-center items-center">
       <div className="bg-gray-50 rounded-3xl p-6 shadow-lg w-full max-w-md relative">
-        
         {/* Back Button inside card */}
-        <button
-          
-          className="absolute top-4 left-4 bg-white rounded-full p-2 shadow"
-        >
-          <ArrowLeft size={20} />
+        <button className="absolute top-4 left-4 bg-white rounded-full p-2 shadow">
+          <Link href="/">
+            <ArrowLeft className="h-5 w-5" />
+          </Link>
         </button>
 
         {/* Username Field */}
