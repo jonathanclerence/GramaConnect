@@ -3,21 +3,92 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Pencil, User } from "lucide-react";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth, db, storage } from "@/lib/firebaseConfig";
+import { doc, setDoc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 function ProfileDetails() {
   const router = useRouter();
 
-  // Form state
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
+  const [dob, setDob] = useState("");
   const [password, setPassword] = useState("");
+  const [nic, setNic] = useState("");
+  const [gender, setGender] = useState("");
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setProfileImage(URL.createObjectURL(file));
+      setProfileImageFile(file);
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      await updateProfile(userCredential.user, { displayName: fullName });
+      const idToken = await userCredential.user.getIdToken();
+
+      let photoURL = null;
+      if (profileImageFile) {
+        const reader = new FileReader();
+        reader.readAsDataURL(profileImageFile);
+        reader.onloadend = async () => {
+          const base64 = reader.result?.toString();
+          const res = await fetch("/api/avatar-upload", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              uid: userCredential.user.uid,
+              image: base64,
+            }),
+          });
+          const data = await res.json();
+          photoURL = data.url;
+          console.log("Uploaded URL:", photoURL);
+        };
+      }
+
+      // Update Firebase Auth profile
+      await updateProfile(userCredential.user, {
+        displayName: fullName,
+        photoURL,
+      });
+
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        fullName,
+        email,
+        address,
+        nic: nic || null,
+        gender: gender || null,
+        dob: dob || null,
+        photoURL: photoURL || null,
+        createdAt: new Date(),
+      });
+
+      await fetch("/api/auth/set-cookie", {
+        method: "POST",
+        body: JSON.stringify({ idToken }),
+        headers: { "Content-Type": "application/json" },
+      });
+      router.push("/home");
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,8 +120,6 @@ function ProfileDetails() {
             ) : (
               <User size={48} className="text-gray-500" />
             )}
-
-            {/* Pencil icon above the image */}
             <label
               htmlFor="avatar-upload"
               className="absolute bottom-2 right-2 bg-gray-100 p-2 rounded-full shadow hover:bg-gray-100 cursor-pointer"
@@ -69,58 +138,43 @@ function ProfileDetails() {
         </div>
 
         {/* Form */}
-        <form className="space-y-4">
-          <div>
-            <label className="block text-gray-600 text-sm mb-1">
-              Full Name
-            </label>
-            <input
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="Enter your full name"
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 text-black placeholder-gray-400"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-600 text-sm mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 text-black placeholder-gray-400"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-600 text-sm mb-1">Address</label>
-            <input
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="Enter your address"
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 text-black placeholder-gray-400"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-600 text-sm mb-1">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 text-black placeholder-gray-400"
-            />
-          </div>
+        <form className="space-y-4" onSubmit={handleRegister}>
+          <input
+            type="text"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="Full Name"
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
+          />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
+          />
+          <input
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Address"
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            className="mt-4 w-full bg-gradient-to-b from-white to-gray-100 text-gray-800 font-medium py-3 rounded-full shadow hover:shadow-md transition"
+          >
+            {loading ? "Registering..." : "Next"}
+          </button>
         </form>
-
-        {/* Next Button */}
-        <button
-          onClick={() => router.push("/home")}
-          className="mt-6 w-full bg-gradient-to-b from-white to-gray-100 text-gray-800 font-medium py-3 rounded-full shadow hover:shadow-md transition"
-        >
-          Next
-        </button>
       </div>
     </div>
   );

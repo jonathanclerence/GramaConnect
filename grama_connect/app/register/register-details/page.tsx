@@ -12,7 +12,7 @@ export default function RegisterDetailsPage() {
       <div className="bg-white rounded-3xl p-6 shadow-lg w-full max-w-md relative">
         {/* Back Button */}
         <button
-          onClick={() => router.push("/register/login")} // ✅ Navigate to nested OTP page
+          onClick={() => router.push("/")} // ✅ Navigate to nested OTP page
           className="absolute top-4 left-4 bg-white rounded-full p-2 shadow"
         >
           <Link href="/">

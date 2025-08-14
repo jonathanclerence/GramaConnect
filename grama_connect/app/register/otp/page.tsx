@@ -2,34 +2,64 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react"; // make sure you have lucide-react installed
+import { ArrowLeft } from "lucide-react";
 
 export default function OtpPage() {
   const router = useRouter();
   const [phone, setPhone] = useState("");
-  const [showOtpSection, setShowOtpSection] = useState(false);
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
+  const [showOtpSection, setShowOtpSection] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
 
-  const handleSendOtp = () => {
+  const handleSendOtp = async () => {
     if (phone.length !== 9) {
-      setError("Incorrect number. Please enter 9 digits.");
+      setError("Please enter a valid 9-digit phone number.");
       return;
     }
-    setError("");
-    console.log("Sending OTP to: +94" + phone);
-    setShowOtpSection(true);
+
+    try {
+      const response = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+
+      if (response.ok) {
+        setShowOtpSection(true);
+        setError("");
+      } else {
+        setError("Failed to send OTP.");
+      }
+    } catch (error) {
+      setError("An error occurred.");
+    }
   };
 
-  const handleVerifyOtp = () => {
-    console.log("Verifying OTP:", otp);
-    router.push("/register/verify");
+  const handleVerifyOtp = async () => {
+    try {
+      const response = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, otp }),
+      });
+
+      if (response.ok) {
+        setOtpVerified(true);
+        setError("");
+      } else {
+        setOtpVerified(false);
+        setError("Invalid OTP.");
+      }
+    } catch (error) {
+      setOtpVerified(false);
+      setError("An error occurred.");
+    }
   };
 
   return (
     <div className="min-h-screen bg-pink-50 flex justify-center items-center">
       <div className="bg-white rounded-3xl p-6 shadow-lg w-full max-w-md relative">
-        {/* Back Button */}
         <button
           onClick={() => router.push("/register/register-details")}
           className="absolute top-4 left-4 bg-white rounded-full p-2 shadow"
@@ -42,25 +72,19 @@ export default function OtpPage() {
           Please provide your mobile number to verify your account.
         </p>
 
-        {/* Phone Input with +94 prefix */}
         <div className="flex items-center border border-gray-300 rounded-full mb-2 overflow-hidden">
           <span className="bg-gray-100 px-4 py-3 text-gray-700">+94</span>
           <input
             type="tel"
             placeholder="77 123 4567"
             value={phone}
-            onChange={(e) => {
-              const value = e.target.value.replace(/\D/g, "");
-              setPhone(value);
-            }}
+            onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
             className="flex-1 h-12 px-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
           />
         </div>
 
-        {/* Error message */}
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
-        {/* Send OTP Button */}
         <button
           onClick={handleSendOtp}
           disabled={phone.length !== 9}
@@ -73,13 +97,12 @@ export default function OtpPage() {
           Send OTP
         </button>
 
-        {/* OTP Section */}
         {showOtpSection && (
           <div className="mt-6">
             <h2 className="text-lg font-bold mb-2">OTP</h2>
             <input
               type="text"
-              placeholder="000-000-0000"
+              placeholder="Enter OTP"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
               className="w-full h-12 px-4 border border-gray-300 rounded-full mb-4 focus:outline-none focus:ring-2 focus:ring-pink-400"
@@ -93,17 +116,20 @@ export default function OtpPage() {
           </div>
         )}
 
-        {/* Policy Text */}
         <p className="text-xs text-gray-500 mt-4">
           By clicking "Next," you accept the{" "}
           <span className="font-semibold">Privacy policy</span> and{" "}
           <span className="font-semibold">Terms of service</span>.
         </p>
 
-        {/* Next Button */}
         <button
-          onClick={() => router.push("/register/profile-details")} // ✅ Goes to OTP page
-          className="mt-6 w-full bg-gradient-to-b from-white to-gray-100 text-gray-800 font-medium py-3 rounded-full shadow hover:shadow-md transition"
+          onClick={() => router.push("/register/profile-details")}
+          disabled={!otpVerified}
+          className={`mt-6 w-full font-medium py-3 rounded-full shadow transition ${
+            otpVerified
+              ? "bg-gradient-to-b from-white to-gray-100 text-gray-800 hover:shadow-md cursor-pointer"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
         >
           Next
         </button>

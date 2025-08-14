@@ -5,6 +5,9 @@ import { Bell } from "lucide-react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { auth, db } from "@/lib/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 
 type Appointment = {
   id: string;
@@ -26,6 +29,26 @@ const center = {
 };
 
 export default function Dashboard() {
+  const [userName, setUserName] = useState("User");
+  const [userPhoto, setUserPhoto] = useState<string | null>(null);
+
+  // Fetch user info from Firestore
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (auth.currentUser) {
+        const uid = auth.currentUser.uid;
+        const userDoc = await getDoc(doc(db, "users", uid));
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          setUserName(data.fullName || "User");
+          setUserPhoto(data.photoURL || null);
+        }
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   const appointments: Appointment[] = [
     {
       id: "1",
@@ -57,16 +80,20 @@ export default function Dashboard() {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full overflow-hidden">
             <Link href="/profile">
-              <Image
-                src="/images/profile.jpg"
-                alt="Profile"
-                width={40}
-                height={40}
-                className="object-cover"
-              />
+              {userPhoto ? (
+                <Image
+                  src={userPhoto}
+                  alt="Profile"
+                  width={40}
+                  height={40}
+                  className="object-cover"
+                />
+              ) : (
+                <div className="w-10 h-10 bg-gray-300 rounded-full" />
+              )}
             </Link>
           </div>
-          <h1 className="text-lg font-bold">Hello Rimaz</h1>
+          <h1 className="text-lg font-bold">Hello {userName}</h1>
         </div>
         <Bell className="w-6 h-6 text-gray-700" />
       </div>
