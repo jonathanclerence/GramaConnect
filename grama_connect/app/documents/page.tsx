@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { X, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,9 +15,16 @@ type DocumentItem = {
 interface DocumentSectionProps {
   title: string;
   documents: DocumentItem[];
+  onRemove: (id: string, verified: boolean) => void;
 }
 
-function DocumentCard({ doc }: { doc: DocumentItem }) {
+function DocumentCard({
+  doc,
+  onRemove,
+}: {
+  doc: DocumentItem;
+  onRemove: (id: string, verified: boolean) => void;
+}) {
   return (
     <div className="flex flex-col items-center">
       <div
@@ -38,7 +46,10 @@ function DocumentCard({ doc }: { doc: DocumentItem }) {
           </div>
         )}
 
-        <button className="absolute top-1 right-1 p-1 bg-white/70 rounded-full hover:bg-white transition">
+        <button
+          onClick={() => onRemove(doc.id, !!doc.verified)}
+          className="absolute top-1 right-1 p-1 bg-white/70 rounded-full hover:bg-white transition"
+        >
           <X size={14} />
         </button>
       </div>
@@ -47,53 +58,60 @@ function DocumentCard({ doc }: { doc: DocumentItem }) {
   );
 }
 
-function DocumentSection({ title, documents }: DocumentSectionProps) {
+function DocumentSection({ title, documents, onRemove }: DocumentSectionProps) {
   return (
     <div className="mb-8">
       <h2 className="text-lg font-bold mb-4">{title}</h2>
-      <div className="grid grid-cols-2 gap-6">
-        {documents.map((doc) => (
-          <DocumentCard key={doc.id} doc={doc} />
-        ))}
-      </div>
+      {documents.length === 0 ? (
+        <p className="text-gray-500 text-sm">No documents available</p>
+      ) : (
+        <div className="grid grid-cols-2 gap-6">
+          {documents.map((doc) => (
+            <DocumentCard key={doc.id} doc={doc} onRemove={onRemove} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
 export default function DocumentsPage() {
-  const verifiedDocs: DocumentItem[] = [
-    {
-      id: "1",
-      title: "Nic",
-      imageUrl: "/images/nic1.jpg",
-      verified: true,
-    },
+  const [verifiedDocs, setVerifiedDocs] = useState<DocumentItem[]>([
+    { id: "1", title: "Nic", imageUrl: "/images/nic1.jpg", verified: true },
     {
       id: "2",
       title: "Birth Certificate",
       imageUrl: "/images/birth.jpg",
       verified: true,
     },
-    {
-      id: "3",
-      title: "Nic",
-      imageUrl: "/images/nic2.jpg",
-      verified: true,
-    },
-  ];
+    { id: "3", title: "Nic", imageUrl: "/images/nic2.jpg", verified: true },
+  ]);
 
-  const otherDocs: DocumentItem[] = [
-    {
-      id: "4",
-      title: "Nic",
-      imageUrl: "/images/nic3.jpg",
-    },
-  ];
+  const [otherDocs, setOtherDocs] = useState<DocumentItem[]>([
+    { id: "4", title: "Nic", imageUrl: "/images/nic3.jpg" },
+  ]);
+
+  // One function for both lists
+  const removeDocument = (id: string, verified: boolean) => {
+    if (verified) {
+      setVerifiedDocs((prev) => prev.filter((doc) => doc.id !== id));
+    } else {
+      setOtherDocs((prev) => prev.filter((doc) => doc.id !== id));
+    }
+  };
 
   return (
     <div className="p-6 h-screen">
-      <DocumentSection title="Verified Documents" documents={verifiedDocs} />
-      <DocumentSection title="Other Documents" documents={otherDocs} />
+      <DocumentSection
+        title="Verified Documents"
+        documents={verifiedDocs}
+        onRemove={removeDocument}
+      />
+      <DocumentSection
+        title="Other Documents"
+        documents={otherDocs}
+        onRemove={removeDocument}
+      />
     </div>
   );
 }

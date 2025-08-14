@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Bell } from "lucide-react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 type Appointment = {
   id: string;
@@ -55,13 +56,15 @@ export default function Dashboard() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full overflow-hidden">
-            <Image
-              src="/images/profile.jpg"
-              alt="Profile"
-              width={40}
-              height={40}
-              className="object-cover"
-            />
+            <Link href="/profile">
+              <Image
+                src="/images/profile.jpg"
+                alt="Profile"
+                width={40}
+                height={40}
+                className="object-cover"
+              />
+            </Link>
           </div>
           <h1 className="text-lg font-bold">Hello Rimaz</h1>
         </div>
@@ -120,7 +123,7 @@ export default function Dashboard() {
             variant="outline"
             className="w-full mt-4 rounded-full bg-white/70 backdrop-blur-md hover:bg-white"
           >
-            Schedule Appointment
+            <Link href="/booking">Schedule Appointment</Link>
           </Button>
         </div>
       </div>
