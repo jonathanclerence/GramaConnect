@@ -6,7 +6,7 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { auth, db } from "@/lib/firebaseConfig";
+import { auth, db } from "@/lib/firebaseClient";
 import { doc, getDoc } from "firebase/firestore";
 
 type Appointment = {

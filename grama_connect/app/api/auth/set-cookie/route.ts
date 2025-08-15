@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/firebaseConfig"; // client-side Firebase
+import { auth } from "@/lib/firebaseClient"; // client-side Firebase
 import { getAuth } from "firebase-admin/auth";
 import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { serialize } from "cookie";
