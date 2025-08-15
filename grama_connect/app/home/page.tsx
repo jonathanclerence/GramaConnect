@@ -79,7 +79,7 @@ export default function Dashboard() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full overflow-hidden">
-            <Link href="/profile">
+            <Link href="/Profile">
               {userPhoto ? (
                 <Image
                   src={userPhoto}

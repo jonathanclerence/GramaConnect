@@ -7,17 +7,17 @@ import { Home, FileText, Users, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/home", icon: Home, label: "Home" },
+  { href: "/Home", icon: Home, label: "Home" },
   { href: "/documents", icon: FileText, label: "Docs" },
   { href: "/Contacts", icon: Users, label: "Contact" },
-  { href: "/booking", icon: Calendar, label: "Booking" },
+  { href: "/Booking", icon: Calendar, label: "Booking" },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
 
   // DEFINE which paths should show the nav bar
-  const visiblePaths = ["/home", "/documents", "/Contacts", "/booking"];
+  const visiblePaths = ["/Home", "/documents", "/Contacts", "/Booking"];
 
   // CHECK if the current path starts with one of the visible paths
   const isVisible = visiblePaths.some((path) => pathname.startsWith(path));
