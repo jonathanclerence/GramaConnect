@@ -31,7 +31,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn(inter.className, "bg-[#EFE6E6]")}>
         {/* Main content with padding-bottom to avoid overlap with nav bar */}
-        <div className="relative min-h-screen pb-24">{children}</div>
+        <div className="relative min-h-screen">{children}</div>
 
         {/* Floating Navigation Bar */}
         <BottomNav />
