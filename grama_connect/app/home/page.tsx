@@ -6,7 +6,7 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { auth, db } from "@/lib/firebaseConfig";
+import { auth, db } from "@/lib/firebaseClient";
 import { doc, getDoc } from "firebase/firestore";
 
 type Appointment = {
@@ -79,7 +79,7 @@ export default function Dashboard() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full overflow-hidden">
-            <Link href="/profile">
+            <Link href="/Profile">
               {userPhoto ? (
                 <Image
                   src={userPhoto}

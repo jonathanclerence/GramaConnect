@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebaseConfig";
+import { auth } from "@/lib/firebaseClient";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,7 +29,7 @@ export default function LoginPage() {
         body: JSON.stringify({ idToken }),
         headers: { "Content-Type": "application/json" },
       });
-      router.push("/home");
+      router.push("/Home");
     } catch (error: any) {
       alert(error.message);
     } finally {

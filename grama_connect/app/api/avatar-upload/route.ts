@@ -1,7 +1,7 @@
 // app/api/avatar-upload/route.ts
 import { NextResponse } from "next/server";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { firebaseApp } from "@/lib/firebaseConfig";
+import { firebaseApp } from "@/lib/firebaseClient";
 
 export async function POST(req: Request) {
   try {
