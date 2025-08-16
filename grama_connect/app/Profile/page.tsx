@@ -9,7 +9,7 @@ export default function ProfilePage() {
       {/* Header */}
       <div className="flex items-center justify-between w-full max-w-md my-4">
         <GlassButton>
-          <Link href="/home">
+          <Link href="/Home">
             <ArrowLeft className="h-5 w-5" />
           </Link>
         </GlassButton>

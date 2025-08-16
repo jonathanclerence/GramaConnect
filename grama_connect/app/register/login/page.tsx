@@ -29,7 +29,7 @@ export default function LoginPage() {
         body: JSON.stringify({ idToken }),
         headers: { "Content-Type": "application/json" },
       });
-      router.push("/home");
+      router.push("/Home");
     } catch (error: any) {
       alert(error.message);
     } finally {
