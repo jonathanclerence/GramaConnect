@@ -87,7 +87,7 @@ export default function BookingPage() {
 
   return (
     // --- UPDATED: Added pt-12 (padding-top) to move content down ---
-    <main className="p-4 pt-20">
+    <main className="p-4 py-20">
       <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" multiple />
       <div className="mx-auto max-w-md space-y-6">
         <div className="space-y-4">

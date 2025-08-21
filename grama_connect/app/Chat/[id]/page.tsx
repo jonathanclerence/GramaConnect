@@ -49,7 +49,7 @@ export default function ChatPage({ params }: { params: { id: string } }) {
     <div className="flex h-screen flex-col bg-[#EFE6E6]">
       {/* 1. Chat Header (Fixed) */}
       <header className="fixed left-0 top-0 z-10 flex w-full items-center gap-4 border-b border-white/30 bg-white/20 p-4 backdrop-blur-lg">
-        <Link href="/Contacts" className="p-1">
+        <Link href="/contacts" className="p-1">
           <ChevronLeft className="h-6 w-6 text-gray-700" />
         </Link>
         <Avatar>
