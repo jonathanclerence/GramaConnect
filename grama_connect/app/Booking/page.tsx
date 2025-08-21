@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { authorities, bookingSubjects, availableTimes, serviceMappings } from "@/lib/data";
+import { auth } from "@/lib/firebaseConfig";
+import { useRouter } from "next/navigation";
 import { Image as ImageIcon, X, FileText, ArrowLeft, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -40,6 +42,9 @@ export default function BookingPage() {
   const [selectedTime, setSelectedTime] = useState("");
   const [requestOnline, setRequestOnline] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [weekStartDate, setWeekStartDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
@@ -124,8 +129,81 @@ export default function BookingPage() {
             <div className="flex flex-wrap justify-center gap-2">{availableTimes.map((time) => (<Button key={time} onClick={() => setSelectedTime(time)} variant={selectedTime === time ? "default" : "outline"} className={cn("rounded-full", selectedTime !== time && "border-gray-300 bg-transparent")}>{time}</Button>))}</div>
           </div>
         </div>
-        <Button size="lg" className="w-full rounded-full bg-blue-500 text-lg">Book Appointment</Button>
+        <Button size="lg" className="w-full rounded-full bg-blue-500 text-lg" onClick={async () => {
+          setMessage(null);
+          // Delegate to handler
+          await handleBookAppointment();
+        }} disabled={isSubmitting}>
+          {isSubmitting ? 'Booking...' : 'Book Appointment'}
+        </Button>
+        {message && <p className="text-center text-sm mt-2 text-red-600">{message}</p>}
       </div>
     </main>
   );
+
+  async function handleBookAppointment() {
+    try {
+      setIsSubmitting(true);
+
+      // Basic validation
+      if (!subject) {
+        setMessage('Please select a service.');
+        setIsSubmitting(false);
+        return;
+      }
+      if (!officer) {
+        setMessage('Please select an officer.');
+        setIsSubmitting(false);
+        return;
+      }
+      if (!selectedDate || !selectedTime) {
+        setMessage('Please select date and time.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Get Firebase ID token
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        setMessage('You must be signed in to create a booking.');
+        setIsSubmitting(false);
+        return;
+      }
+      const idToken = await currentUser.getIdToken();
+
+      const formData = new FormData();
+      formData.append('serviceId', subject);
+      formData.append('officerId', officer);
+      formData.append('appointmentDate', selectedDate);
+      formData.append('appointmentTime', selectedTime);
+      uploadedFiles.forEach((f) => formData.append('documents', f));
+
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setMessage(data?.error || 'Failed to create booking');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Navigate to booking details page
+      const bookingId = data.bookingId;
+      if (bookingId) {
+        router.push(`/booking/${bookingId}`);
+      } else {
+        setMessage('Booking created but no id returned.');
+      }
+    } catch (err: any) {
+      setMessage(err?.message || 'Unexpected error while creating booking');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 }
