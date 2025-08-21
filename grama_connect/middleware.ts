@@ -15,7 +15,7 @@ export function middleware(req: NextRequest) {
   }
 
   // ✅ Auth protection for main pages
-  const protectedPaths = ["/home", "/booking", "/documents", "/contact"];
+  const protectedPaths = ["/home", "/booking", "/documents", "/contacts"];
   if (protectedPaths.some((p) => path.startsWith(p)) && !userLoggedIn) {
     return NextResponse.redirect(new URL("/register/login", req.url));
   }
@@ -24,5 +24,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/register/:path*", "/home", "/booking", "/documents", "/contact"],
+  matcher: ["/register/:path*", "/home", "/booking", "/documents", "/contacts"],
 };

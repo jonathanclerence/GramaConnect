@@ -16,7 +16,7 @@ export default function ContactsPage() {
       <section className="flex flex-col gap-4">
         {authorities.map((authority) => (
           <Link
-            href={`/Chat/${authority.id}`}
+            href={`/chat/${authority.id}`}
             key={authority.id}
             className="group"
           >
