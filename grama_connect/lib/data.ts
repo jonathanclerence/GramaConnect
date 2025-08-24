@@ -108,3 +108,53 @@ export const serviceMappings: { [key: string]: { responsible: string[], docs: st
 
 // --- Dummy available time DATA FOR BOOKING PAGE ---
 export const availableTimes = ["09:00 AM", "11:00 AM", "03:00 PM"];
+
+// --- Notification DATA ---
+export type Notification = {
+  id: string;
+  title: string;
+  description: string;
+  timestamp: string;
+  avatarUrl: string;
+  read: boolean;
+  type: 'reminder' | 'appointment' | 'registration' | 'vote' | 'general';
+};
+
+export const notifications: Notification[] = [
+  {
+    id: "1",
+    title: "Pension Form Reminder",
+    description: "Due Date 20/08/2025",
+    timestamp: "9:41 AM",
+    avatarUrl: "/chatAvatars/dembele.jpg",
+    read: false,
+    type: "reminder"
+  },
+  {
+    id: "2", 
+    title: "Character Certificate",
+    description: "Upcoming Appointment with Gs",
+    timestamp: "9:41 AM",
+    avatarUrl: "/chatAvatars/cristiano.jpg",
+    read: false,
+    type: "appointment"
+  },
+  {
+    id: "3",
+    title: "Voters List",
+    description: "Registration for 2026 Elections Open",
+    timestamp: "9:41 AM", 
+    avatarUrl: "/chatAvatars/messi.jpg",
+    read: false,
+    type: "registration"
+  },
+  {
+    id: "4",
+    title: "Every Vote Counts",
+    description: "Vote for your preferred party today!",
+    timestamp: "9:41 AM",
+    avatarUrl: "/chatAvatars/negreira.jpg", 
+    read: false,
+    type: "vote"
+  }
+];

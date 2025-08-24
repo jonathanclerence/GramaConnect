@@ -95,7 +95,9 @@ export default function Dashboard() {
           </div>
           <h1 className="text-lg font-bold">Hello {userName}</h1>
         </div>
-        <Bell className="w-6 h-6 text-gray-700" />
+        <Link href="/notifications">
+          <Bell className="w-6 h-6 text-gray-700 hover:text-gray-900 transition-colors cursor-pointer" />
+        </Link>
       </div>
 
       {/* Locate GS Office */}
